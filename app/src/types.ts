@@ -1,0 +1,25 @@
+export type Festival = { id: string; name: string; start_date: string; end_date: string; venue: string; published: boolean };
+export type Occurrence = { id: string; day: string; booked: number };
+export type Pooja = { id: string; festival_id: string; name: string; pricing: string; amount: number; capacity: number; active: boolean; instructions: string; eligibility: string; opens_at: string; closes_at: string; occurrences: Occurrence[] };
+export type Slot = { id: string; festival_id: string; name: string; day: string; amount: number; capacity: number; booked: number };
+export type Summary = { collected: number; refunded: number; expenses: number; approved_unpaid: number; balance: number; pledged?: number; outstanding?: number };
+export type Page = { id: string; name: string; slug: string; upi: string; festivals: Festival[]; poojas: Pooja[]; slots: Slot[]; sponsors: { slot_id: string; sponsor: string }[]; summary: Summary | null; updated_at: string | null };
+export type WorkspaceLink = { id: string; name: string; slug: string; role: string };
+export type Commitment = { id: string; label: string; amount: number; paid: number; refunded: number; waived: number; cancelled: boolean };
+export type Payment = { id: string; commitment_id: string; amount: number; method: string; reference: string; state: string; created_at: string; refunded: number; receipt: { number: number; created_at: string } | null };
+export type Expense = { id: string; festival_id: string; title: string; category: string; amount: number; day: string; paid: boolean; state: string; version: number; note: string; created_by: string };
+export type Registration = { id: string; pooja_id: string; participant_names: string[]; amount: number; state: string; created_at: string };
+export type Member = { user_id: string; role: string; active: boolean; permissions: string[] };
+export type Workspace = {
+  capabilities: Record<string, boolean>;
+  settings: { name: string; upi: string; published: boolean; transparency: boolean } | null;
+  families: { id: string; name: string; mobile: string; participants: string[] }[];
+  registrations: Registration[];
+  commitments: Commitment[];
+  payments: Payment[];
+  expenses: Expense[];
+  members: Member[];
+  audit: { id: number; action: string; entity_id: string | null; created_at: string }[];
+  attachments: { id: string; payment_id: string | null; expense_id: string | null; path: string }[];
+  summary: Summary | null;
+};

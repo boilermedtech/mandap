@@ -1,0 +1,22 @@
+import { createClient } from '@supabase/supabase-js';
+import { localClient } from './localClient';
+
+const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
+export const localMode = !(url && key);
+const hostedClient = url && key ? createClient(url, key, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
+}) : null;
+export const client = hostedClient ?? localClient;
+
+export function getClient() {
+  if (!client) throw new Error('Backend configuration is missing.');
+  return client;
+}
+
+export async function rpc<T>(name: string, args: Record<string, unknown> = {}): Promise<T> {
+  if (!client) throw new Error('Configure the Supabase URL and publishable key before using the app.');
+  const { data, error } = hostedClient ? await hostedClient.rpc(name, args) : await localClient.rpc(name, args);
+  if (error) throw new Error(error.message);
+  return data as T;
+}
