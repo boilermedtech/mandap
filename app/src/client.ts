@@ -5,7 +5,10 @@ const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined;
 export const localMode = !(url && key);
 const hostedClient = url && key ? createClient(url, key, {
-  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
+  // Demo-mode convenience: Supabase's default mailer can only send its built-in magic-link
+  // template (not the {{ .Token }} code this app's UI asks for) until custom SMTP is configured.
+  // Detecting the session from the emailed link's URL lets sign-in work without Resend.
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
 }) : null;
 export const client = hostedClient ?? localClient;
 
