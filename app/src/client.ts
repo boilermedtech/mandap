@@ -8,7 +8,9 @@ const hostedClient = url && key ? createClient(url, key, {
   // Demo-mode convenience: Supabase's default mailer can only send its built-in magic-link
   // template (not the {{ .Token }} code this app's UI asks for) until custom SMTP is configured.
   // Detecting the session from the emailed link's URL lets sign-in work without Resend.
-  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+  // Implicit flow (not PKCE) puts the session tokens directly in the link so it also works
+  // when the email is opened in a different browser/device than the one that requested it.
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'implicit' },
 }) : null;
 export const client = hostedClient ?? localClient;
 
